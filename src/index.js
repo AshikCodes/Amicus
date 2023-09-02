@@ -7,9 +7,9 @@ import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
 import userReducer from './reducers/userReducer';
 import { configureStore } from '@reduxjs/toolkit';
 import { BrowserRouter as Router } from 'react-router-dom';
-import animationReducer from './reducers/animationReducer';
 import { ChakraProvider, extendBaseTheme, extendTheme } from '@chakra-ui/react'
 import chakraTheme from '@chakra-ui/theme'
+import clientReducer from './reducers/clientReducer';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const queryClient = new QueryClient()
@@ -17,7 +17,7 @@ const queryClient = new QueryClient()
 const store = configureStore({
   reducer: {
     user: userReducer,
-    animation: animationReducer
+    client: clientReducer
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 })

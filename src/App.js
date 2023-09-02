@@ -36,6 +36,7 @@ import AdminVideoConference from './components/AdminComponents/AdminVideoConfere
 import AdminVideoConferenceDetail from './components/AdminComponents/AdminVideoConferenceDetail.js';
 import ClientVideoConference from './components/ClientVideoConference';
 import ClientVideoConferenceDetail from './components/ClientVideoConferenceDetail';
+import VideoConference from './components/VideoConference';
 
 // const socket = io.connect('http://localhost:3001')
 const socket = io.connect('http://localhost:3001')
@@ -64,7 +65,8 @@ function App({client}) {
           <Route path='/client/messages' element={<div style={{display: 'flex', flexDirection: 'row'}}><><ClientSidebar /><ClientMessages socket={socket}/></></div>}/>
           <Route path='/client/messages/:roomid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><ClientSidebar /><ClientMessageDetail socket={socket}/></></div>}/>
           <Route path='/client/video-conference' element={<div style={{display: 'flex', flexDirection: 'row'}}><><ClientSidebar /><ClientVideoConference socket={socket}/></></div>}/>
-          <Route path='/client/video-conference/:roomid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><ClientSidebar /><ClientVideoConferenceDetail socket={socket}/></></div>}/>
+          {/* <Route path='/client/video-conference/:roomid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><ClientSidebar /><ClientVideoConferenceDetail socket={socket}/></></div>}/> */}
+          <Route path='/client/video-conference/:roomid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><ClientSidebar /><VideoConference socket={socket}/></></div>}/>
           <Route path='/client/billing/:paymentid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><ClientSidebar /><ClientBillInfo /></></div>}/>
           <Route path='/client/appointments' element={<div style={{display: 'flex', flexDirection: 'row'}}><><ClientSidebar /><ClientAppointments /></></div>}/>
         </Route>
@@ -79,7 +81,8 @@ function App({client}) {
         <Route path='/admin/messages' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminMessages/></></div>}/>
         <Route path='/admin/messages/:roomid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminMessageDetail socket={socket}/></></div>}/>
         <Route path='/admin/video-conference' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminVideoConference/></></div>}/>
-        <Route path='/admin/video-conference/:roomid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminVideoConferenceDetail socket={socket}/></></div>}/>
+        {/* <Route path='/admin/video-conference/:roomid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminVideoConferenceDetail socket={socket}/></></div>}/> */}
+        <Route path='/admin/video-conference/:roomid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><VideoConference socket={socket}/></></div>}/>
         <Route path='/admin/case-management' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminCases/></></div>}/>
         <Route path='/admin/cases/:caseid/submit' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><SubmitCaseBrief /></></div>}/>
         <Route exact path='/admin/cases/:caseid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminCaseDetails /></></div>}/>

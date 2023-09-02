@@ -2,21 +2,24 @@ import axios from "axios";
 import { useRef, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Peer from "simple-peer"
 import SimplePeer from "simple-peer";
 
-const ClientVideoConferenceDetail = ({socket}) => {
+const VideoConference = ({socket}) => {
     
     const myVideo = useRef()
     const connectionRef= useRef()
     const SimplePeer = window.SimplePeer;
 
+
     const { roomid } = useParams()
     const location = useLocation()
 
+    const navigate = useNavigate()
 
     const userObj = useSelector(state => state.user)
+    const clientObj = useSelector(state => state.client)
     const [stream, setStream ] = useState()
     const userVideo = useRef()
     const [ callAccepted, setCallAccepted ] = useState(false)
@@ -28,25 +31,33 @@ const ClientVideoConferenceDetail = ({socket}) => {
     const [ receivingCall, setReceivingCall ] = useState(false)
 
     const [me, setMe] = useState('')
-    // const [sender, setSender] = useState('')
-    // const [receiver, setReceiver] = useState('')
     const [sender, setSender] = useState('')
     const [receiver, setReceiver] = useState('')
-    const [room, setRoom] = useState(roomid)
+
+    const [room, setRoom] = useState('')
 
     const [userType, setUserType] = useState()
 
     const resetCallState = () => {
         setCallAccepted(false);
         setCallEnded(false);
-        setCaller("");
+        // setCaller("");
         setReceivingCall(false)
-        setName("");
-        // connectionRef.current = null;
+        // setName("");
     };
 
+    useEffect(() => {
+        return () => {
+
+        }
+    },[])
 
     useEffect(() => {
+        // if(userObj.usertype === 0){
+        //     console.log(`got in userblock`)
+        //     console.log(`room id here is ${location.state.clientid}`)
+        // }
+        
         if(room){
             socket.emit("join_room", {room})
         }
@@ -54,52 +65,59 @@ const ClientVideoConferenceDetail = ({socket}) => {
 
     useEffect(() => {
         setMe(userObj.id)
-
-        const getDeviceMedia = async () => {
-            // const getUserMedia = async () => {
-            try {
-                    const stream = await navigator.mediaDevices.getUserMedia({video: true});
-                    setStream(stream)
-                    myVideo.current.srcObject = stream;
-            }
-            catch(err){
-                console.log(`Error here is ${err}`)
-            }
-            
-            }
-            // getUserMedia()
-            getDeviceMedia()
+        
+        const getUserMedia = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({video: true});
+            setStream(stream)
+            myVideo.current.srcObject = stream;
+        }
+        catch(err){
+            console.log(`Error here is ${err}`)
+        }
+        
+        }
+		getUserMedia()
 
         const getInfo = async () => {
-            setSender(userObj.id)
-            setReceiver('00e01d43-9571-4d1b-badd-b3cfdf4dcae7')
-        //     let user_type = userObj.usertype
-        //     let messageInfo
-        //     if(user_type === 1){
-        //         setSender(userObj.id)
-        //         setReceiver('00e01d43-9571-4d1b-badd-b3cfdf4dcae7')
-        //         messageInfo = {
-        //             sender: userObj.id,
-        //             receiver: '00e01d43-9571-4d1b-badd-b3cfdf4dcae7'
-        //         }
-        //     }
-        //     else if(user_type === 0){
-        //         let receiver = location.state.clientid
-        //         setSender('00e01d43-9571-4d1b-badd-b3cfdf4dcae7')
-        //         setReceiver(receiver)
-        //         messageInfo = {
-        //             sender: userObj.id,
-        //             receiver: receiver
-        //         }
-        //     }
+            let user_type = userObj.usertype
+            let messageInfo
+            if(user_type === 1){
+                setSender(userObj.id)
+                setReceiver('00e01d43-9571-4d1b-badd-b3cfdf4dcae7')
+                messageInfo = {
+                    sender: userObj.id,
+                    receiver: '00e01d43-9571-4d1b-badd-b3cfdf4dcae7'
+                }
+            }
+            else if(user_type === 0){
+                let receiver1
+                if(localStorage.getItem('clientData') === null){
+                    window.localStorage.setItem('clientData', clientObj.id)
+                    receiver1 = clientObj.id
+                }
+                else{
+                    receiver1 = localStorage.getItem('clientData')
+                }
+                
+                console.log(`client id here is ${clientObj.id}`)
+                setSender('00e01d43-9571-4d1b-badd-b3cfdf4dcae7')
+                // setReceiver(location.state.clientid)
+                // setReceiver(clientObj.clientid)
+                setReceiver(receiver1)
+                
+                messageInfo = {
+                    sender: '00e01d43-9571-4d1b-badd-b3cfdf4dcae7',
+                    // receiver: location.state.clientid
+                    receiver: clientObj.clientid
+                }
+            }
                 // await axios.post('http://localhost:3001/get_room', {sender: messageInfo.sender, receiver: messageInfo.receiver})
                 //             .then((res) => {
                 //                 console.log(`room here is ${res.data.room}`)
                 //                 setRoom(res.data.room)
                 //             })
-
-        //         setRoom(roomid)
-
+            setRoom(roomid)
         }
         getInfo()
         
@@ -112,32 +130,47 @@ const ClientVideoConferenceDetail = ({socket}) => {
 		})
 
         socket.on("endCall", (data) => {
-            leaveCall()
+            // leaveCall()
+            if(userObj.usertype === 0){
+                console.log(`client id in end call is ${clientObj.clientid}`)
+            }
+            console.log('got in end call', data)
+            setCallEnded(true)
+            // if(connectionRef.current){
+            //     console.log(`connectionRef is destroyed`)
+            //     connectionRef.current.destroy()
+            // }
+            console.log('getting in destroy')
+            connectionRef.current.destroy()
+            
+            resetCallState()
         })
 
         return () => {
             if (connectionRef.current) {
-              connectionRef.current.destroy();
+                connectionRef.current.destroy();
             }
             socket.off("callUser");
             socket.off("endCall");
-          };
-
+            socket.off("callAccepted"); // Remove callAccepted listener
+        };
+        
 	}, [sender, receiver])
 
     const callUser = (roomNumber) => {
-        console.log('clicked call btn')
+        // Close the existing connection if it exists
+
         const peer = new SimplePeer({
             initiator: true,
 			trickle: false,
 			stream: stream
         })
-        
 
         connectionRef.current = peer;
 
         peer.on("signal", (data) => {
-            console.log(`got in signal: ${roomNumber}`)
+            console.log(`the reciever here is ${receiver}`)
+            console.log(`roomNumber here is ${roomNumber}`)
 			socket.emit("callUser", {
 				userToCall: roomNumber,
 				signalData: data,
@@ -146,46 +179,34 @@ const ClientVideoConferenceDetail = ({socket}) => {
 			})
 		})
 
-        
-
         peer.on("stream", (stream_num) => {	
-            console.log(`got in stream peer`)
             userVideo.current.srcObject = stream_num
         })
 
-        peer.on('close', () => { 
-            console.log(`why is it here`)
-            console.log('peer closed'); 
-            socket.off("callAccepted");
-        });
+        peer.on('close', () => { console.log('peer closed'); socket.off("callAccepted"); });
 
         socket.on("callAccepted", (signal) => {
 			setCallAccepted(true)
 			peer.signal(signal)
 		})
 
-        // connectionRef.current = peer
-        if (connectionRef.current) {
-            connectionRef.current.destroy();
-          }
-          connectionRef.current = peer;
+        connectionRef.current = peer
     }
 
     const answerCall =() =>  {
+
 		setCallAccepted(true)
         const peer = new SimplePeer({
             initiator: false,
 			trickle: false,
 			stream: stream
         })
-        
+
+        connectionRef.current = peer;
 
 		peer.on("signal", (data) => {
 			socket.emit("answerCall", { signal: data, to: room })
 		})
-        
-        // connectionRef.current = peer;
-
 		peer.on("stream", (stream) => {
 			userVideo.current.srcObject = stream
 		})
@@ -193,29 +214,27 @@ const ClientVideoConferenceDetail = ({socket}) => {
         peer.on('close', () => { console.log('peer closed'); socket.off("callAccepted"); });
 
 		peer.signal(callerSignal)
-		// connectionRef.current = peer
-        if (connectionRef.current) {
-            connectionRef.current.destroy();
-          }
-          connectionRef.current = peer;
+		connectionRef.current = peer
 	}
 
 	const leaveCall = () => {
-		setCallEnded(true)
-		// connectionRef.current.destroy()
-        if (connectionRef.current) {
-            connectionRef.current.destroy(); // Check if connectionRef.current is defined
-        }
-        // connectionRef.current = null
-        resetCallState()
-        socket.emit("hangUpCall", {room})
+            setCallEnded(true)
+            // if(connectionRef.current){
+            //     console.log(`connectionRef is destroyed`)
+            //     connectionRef.current.destroy()
+            // }
+            console.log('getting in destroy')
+            connectionRef.current.destroy()
+            
+            resetCallState()
+            socket.emit("hangUpCall", {room})
 	}
 
 
 
     return ( 
         <div>
-            <h2>Video Conferencing - Client</h2>
+            <h2>Video Conferencing</h2>
             <div className="video-container">
 				<div className="video">
 					{stream && 
@@ -238,7 +257,7 @@ const ClientVideoConferenceDetail = ({socket}) => {
 					{callAccepted && !callEnded ? (
 						<button variant="contained" color="secondary" onClick={leaveCall}>End Call</button>
 					) : (
-                        <button onClick={() => callUser(roomid)}>Call</button>
+                        <button onClick={() => callUser(room)}>Call</button>
 					)}
 				</div>
                 <div>
@@ -253,4 +272,4 @@ const ClientVideoConferenceDetail = ({socket}) => {
      );
 }
  
-export default ClientVideoConferenceDetail;
+export default VideoConference;

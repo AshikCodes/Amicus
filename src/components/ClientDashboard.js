@@ -17,7 +17,10 @@ import {
     TableCaption,
     TableContainer,
     Badge,
+    Button,
+    Box,
   } from '@chakra-ui/react'
+import { Link } from "react-router-dom";
 
 
 const ClientDashboard = () => {
@@ -33,6 +36,7 @@ const ClientDashboard = () => {
     const getDashboardInfo = async () => {
             let dashboard
             let result = await axios.post('http://localhost:3001/dashboard', {id: userObj.id})
+            
             if(result.data.cases === null){
                 setNoCases(true)
             }
@@ -48,9 +52,12 @@ const ClientDashboard = () => {
                     casestatus: mainCase.casestatus,
                     casehistory: reversedArray
                 }
-            }
             
+            }
+
             return dashboard
+            
+            
         
         
     }
@@ -167,7 +174,12 @@ const ClientDashboard = () => {
                     <SkeletonElement type='widget7-text' />
                     <SkeletonElement type='widget7-text' />
                 </div>}                
-            </div> : <h1 className="new-client-msg">New Member, Future Legal Trailblazer! 🚀 Your arrival sparks excitement. We're here for you when you're ready to embark.</h1>}    
+            </div> :<div className="client-dashboard-container no-cases">
+                            <div className="no-cases-client-container">
+                                <h1 className="no-cases-msg client" >Welcome to your client dashboard! No active cases? Time to create a new one! Click below to start your next legal journey!</h1>
+                                <Button colorScheme="green" onClick={() => navigate('/client/cases/new/choose-plan')} _hover={{cursor: 'pointer'}}>Create Case Brief</Button>
+                            </div>
+                    </div>}    
         </div>
      );
 }

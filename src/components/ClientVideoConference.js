@@ -8,6 +8,7 @@ const ClientVideoConference = () => {
     const [msgList, setMsgList] = useState(null)
     const navigate = useNavigate()
     useEffect(() => {
+        localStorage.removeItem('clientData')
         const getMessageInfo = async () => {
             try {
                 let result = await axios.post('http://localhost:3001/cases', {id: userObj.id})
@@ -19,6 +20,7 @@ const ClientVideoConference = () => {
         }
         getMessageInfo()
     }, [])
+
 
     const goToMessageDetails = (room) => {
         navigate(`/client/video-conference/${room}`)

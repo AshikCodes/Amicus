@@ -4,8 +4,9 @@ import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import ClientBillInfo from "./ClientBillInfo";
-import { Badge } from "@chakra-ui/react";
+import { Badge, Heading, Stack } from "@chakra-ui/react";
 import format from "date-fns/format";
+import { Skeleton, SkeletonCircle, SkeletonText } from '@chakra-ui/react'
 
 const ClientBilling = () => {
     const userObj = useSelector(state => state.user)
@@ -62,8 +63,17 @@ const ClientBilling = () => {
     return ( 
         <div>
             <div className="client-billing-container">
-            <h1 className="client-billing-title">Billing Information </h1>
-            <table className="billing-table">
+            {/* <h1 className="client-billing-title">Billing Information </h1> */}
+            <Heading size='md' as='h1' fontSize='4xl' bgGradient='linear(to-l, #7928CA, #FF0080)'   bgClip='text'>Billing Information</Heading>
+
+            {!records &&
+                <Stack>
+                <Skeleton height='9vh' width='70vw' ml='5em' mb='0.3em'/>
+                <Skeleton height='9vh' width='70vw' ml='5em' mb='0.3em'/>
+                <Skeleton height='9vh' width='70vw' ml='5em' mb='0.3em'/>
+              </Stack>
+            }
+            {records && <table className="billing-table">
                         <tr className="billing-table-header">
                             <th className="billing-header" style={{fontWeight: 'bold'}}>Case</th>
                             {/* <th className="billing-header" style={{fontWeight: 'bold'}}>Case Plan</th> */}
@@ -95,9 +105,9 @@ const ClientBilling = () => {
                                 {payment.paymentstatus === 'not paid' ? <td className="billing-item">NA</td> : payment.paymentstatus === 'paid' ? <td className="billing-item">{format(new Date(payment.paymentdate), "MMMM d, yyyy, h:mm a")}</td> : null}
                             </tr>
                         )}
-                    </table>
+                    </table>}
                     {records && <nav>
-                <ul className="pagination-container">
+                {records && <ul className="pagination-container">
                     <li className="page-item">
                         <a className="page-link" onClick={prevPage}>Prev</a>
                     </li>
@@ -109,7 +119,7 @@ const ClientBilling = () => {
                     <li className="page-item">
                         <a className="page-link" onClick={nextPage}>Next</a>
                     </li>
-                </ul>
+                </ul>}
             </nav>}
             </div>
             

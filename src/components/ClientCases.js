@@ -4,7 +4,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { useQuery } from "react-query";
 import { motion } from 'framer-motion'
-import { Badge, Box, Button } from "@chakra-ui/react";
+import { Badge, Box, Button, Heading, Skeleton, Stack } from "@chakra-ui/react";
 
 
 
@@ -70,10 +70,17 @@ const ClientCases = () => {
             {/* <motion.h1 initial={{y: -400, opacity: 0}} animate={{y: 0, opacity: 1}} className="client-cases-title">Case Information</motion.h1> */}
             <div>
             <Box display='flex' justifyContent='center' alignItems='center' position='relative'> 
-            <h1 className="client-cases-title">Case Information</h1>
+            {/* <h1 className="client-cases-title">Case Information</h1> */}
+            <Heading size='md' as='h1' fontSize='4xl' bgGradient='linear(to-l, #7928CA, #FF0080)'   bgClip='text'>Case Information</Heading>
             <Button border='none' boxShadow='2xl' color='white' size='lg' ml='2em' p='1.5em' bgGradient='linear(-20deg, #00cdac 0%, #8ddad5 100%)' _hover={{bgGradient: 'linear(-20deg, #00cdac 0%, #8ddad5 100%)', cursor: 'pointer'}} position='absolute' right='2em'><Link to='/client/cases/new/choose-plan' style={{color: 'white', textDecoration: 'none'}}>Create new case</Link></Button>
             </Box>
-            <table className="cases-table">
+            {!records && 
+              <Stack>
+                <Skeleton height='9vh' width='70vw' ml='5em' mb='0.3em'/>
+                <Skeleton height='9vh' width='70vw' ml='5em' mb='0.3em'/>
+                <Skeleton height='9vh' width='70vw' ml='5em' mb='0.3em'/>
+              </Stack>}
+            {records && <table className="cases-table">
                         <tr className="cases-table-header">
                             <th className="case-header" style={{fontWeight: 'bold'}}>Case</th>
                             <th className="case-header" style={{fontWeight: 'bold'}}>Case ID</th>
@@ -96,7 +103,7 @@ const ClientCases = () => {
                             <td className="case-item">{casebrief.casestatus === 'complete' ? <Badge className="status-tag" colorScheme='green'>completed</Badge> : casebrief.casestatus === 'in progress' ? <Badge className="status-tag" colorScheme='purple'>in progress</Badge> : <Badge className="status-tag" colorScheme='red'>issue</Badge>}</td>
                         </tr>
                         )}
-                    </table>
+                    </table>}
             </div>
             {records && <nav>
                 <ul className="pagination-container">

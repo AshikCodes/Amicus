@@ -1,12 +1,10 @@
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setAnimationCount } from "../reducers/animationReducer";
 
 const ClientSettings = ({client}) => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const handleLogout = () => {
-        dispatch(setAnimationCount(0))
         client.removeQueries()
         localStorage.removeItem('loggedAppUser');
         navigate('/')

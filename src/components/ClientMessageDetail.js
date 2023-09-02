@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 import _ from "lodash";
+import { Button, Heading } from "@chakra-ui/react";
+import { animateScroll } from "react-scroll";
 
 const ClientMessageDetail = ({socket}) => {
     const userObj = useSelector(state => state.user)
@@ -14,6 +16,16 @@ const ClientMessageDetail = ({socket}) => {
     const location = useLocation()
 
 
+    useEffect(() => {
+        scrollToBottom()
+      }, [messageReceived]);
+
+     const scrollToBottom = () => {
+        animateScroll.scrollToBottom({
+            containerId: "message-container",
+            duration: 300
+          });
+      }
 
     useEffect(() => {
         
@@ -80,9 +92,10 @@ const ClientMessageDetail = ({socket}) => {
         getMessages()
     },[])
     return ( 
-        <div>
-            <h1>Welcome to the details page for message!</h1>
-            {roomid && <h2>Room ID: {roomid}</h2>}
+        <div className="scrollable-msg-view">
+            {/* <h1 className="message-page-title">Welcome to the details page for message!</h1> */}
+            {roomid && <Heading size='md' as='h1' fontSize='4xl' bgGradient='linear(to-l, #7928CA, #FF0080)'   bgClip='text'>Chat Room</Heading>}
+            {/* {roomid && <h2>Room ID: {roomid}</h2>} */}
             {roomid && <div>
             <div className="dialog-window">
                 <div id="message-container">
@@ -94,8 +107,12 @@ const ClientMessageDetail = ({socket}) => {
                 ))}
                 </div>
             </div>
+            <div className="msg-input-container">
             <input value={message} onChange={e => setMessage(e.target.value)}></input>
-            <button onClick={sendMessage}>Send message</button>
+            {/* <button onClick={sendMessage}>Send message</button> */}
+            <Button onClick={sendMessage} colorScheme="green" _hover={{cursor: 'pointer'}} height='2em'>Send</Button>
+            </div>
+            
             </div>}
         </div>
      );

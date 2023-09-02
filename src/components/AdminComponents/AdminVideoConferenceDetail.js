@@ -182,7 +182,7 @@ const AdminVideoConferenceDetail = ({socket}) => {
 		// connectionRef.current = peer
         if (connectionRef.current) {
             connectionRef.current.destroy();
-          }
+        }
           connectionRef.current = peer;
 	}
 

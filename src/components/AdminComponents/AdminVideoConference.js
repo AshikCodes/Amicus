@@ -1,13 +1,16 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setClientData } from "../../reducers/clientReducer";
 
 const AdminVideoConference = () => {
     const userObj = useSelector(state => state.user)
+    const dispatch = useDispatch()
     const [msgList, setMsgList] = useState(null)
     const navigate = useNavigate()
     useEffect(() => {
+        localStorage.removeItem('clientData')
         const getMessageInfo = async () => {
             try {
                 let result = await axios.get('http://localhost:3001/cases')
@@ -21,7 +24,9 @@ const AdminVideoConference = () => {
     }, [])
 
     const goToMessageDetails = (room, clientid) => {
-        navigate(`/admin/video-conference/${room}`, {state: {clientid: clientid}})
+        dispatch(setClientData({id: clientid}))
+        // navigate(`/admin/video-conference/${room}`, {state: {clientid: clientid}})
+        navigate(`/admin/video-conference/${room}`)
     }
     return ( 
         <div>

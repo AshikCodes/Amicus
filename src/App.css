@@ -1008,6 +1008,30 @@ rgb(156, 156, 245)
    background-size: cover; 
 }
 
+.client-dashboard-container.no-cases {
+  /* position: relative; */
+  position: static;
+  display: flex;
+  height: 95vh;
+  width: 78vw;
+  padding: 1.3em;
+  justify-content: center;
+  align-items: center;
+  /* background-image: url('./dashboardlayer.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  aspect-ratio: 3/2; 
+   background-size: cover;  */
+}
+
+.no-cases-client-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+}
+
 .client-cases-container {
   height: 95vh;
   width: 78vw;
@@ -1212,7 +1236,9 @@ rgb(156, 156, 245)
 }
 
 .cases-table-header, .billing-table-header {
-  background-color: rgb(73, 73, 73);
+  /* background-color: rgb(73, 73, 73); */
+  background: linear-gradient(to bottom, #323232 0%, #3F3F3F 40%, #1C1C1C 150%), linear-gradient(to top, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.25) 200%);
+  background-blend-mode: multiply;
   color: white;
 }
 
@@ -1223,7 +1249,11 @@ rgb(156, 156, 245)
 }
 
 .cases-table-row, .billing-table-row {
-  background-color: #fafafa;
+  /* background-color: #fafafa; */
+  /* background-image: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%); */
+  background-image: linear-gradient(-20deg, #e9defa 0%, #fbfcdb 100%);
+  /* background-image: radial-gradient(73% 147%, #EADFDF 59%, #ECE2DF 100%), radial-gradient(91% 146%, rgba(255,255,255,0.50) 47%, rgba(0,0,0,0.50) 100%);
+  background-blend-mode: screen;  */
 }
 
 .cases-table-row:hover, .billing-table-row:hover {
@@ -1658,14 +1688,12 @@ input[type=file]::file-selector-button {
 
 }
 
-.new-client-msg {
-  width: 34vw;
-  position: absolute;
-  left: 30%;
-  top: 35%;
-  font-size: 2.5em;
-  text-shadow: 0.02em 0.02em 0.03em greenyellow;
+.no-cases-msg.client {
+  top: 26%;
+  position: static;
 }
+
+
 
 .client-cases-title {
   background: conic-gradient(from 90deg at 50% 125%, #20b2aa, #135da5, #0d0895, #4b0082, #4b0082, #0d0895, #135da5, #20b2aa);
@@ -1759,4 +1787,65 @@ input[type=file]::file-selector-button {
 
 .page-item:hover {
   cursor: pointer;
+}
+
+
+
+/* Message CSS */
+.dialog-window {
+  /* background-color: red; */
+  /* margin-left: 20em; */
+  height: 700px;
+  /* height: 80vh; */
+  width: 400px;
+  /* padding: 10px; */
+  /* border: 1px black solid; */
+}
+
+.sender-box {
+  /* background-color: rgb(84, 198, 84); */
+  background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  width: 10em;
+  border-radius: 10px;
+  padding: 10px;
+  float: right;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  color: white;
+}
+
+.receiver-box {
+  /* background-color: rgb(88, 137, 234); */
+  background-image: linear-gradient(to right, #43e97b 0%, #38f9d7 100%);
+  width: 200px;
+  border-radius: 10px;
+  padding: 10px;
+  float: left;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#message-container {
+  overflow: auto;
+  height: 83vh;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollable-msg-view {
+  width: 100vw;
+  height: 100vh;
+  overflow-y:auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.msg-input-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2em;
 }

@@ -4,8 +4,7 @@ import ScrollToTopBtn from "./components/ScrollToTopBtn"
 import Accordian from "./components/Accordian";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { motion } from 'framer-motion'
-import { setAnimationCount } from "./reducers/animationReducer";
+import { motion } from 'framer-motion';
 
 
 
@@ -36,11 +35,6 @@ const Home = () => {
             content: `Reliable legal services in Kochi, Kerala, and beyond. Reach out to us at 123@amicuslaw.com for a consultation or inquiries. Let's achieve legal success together.`
         }
     ]
-
-    useEffect(() => {
-        dispatch(setAnimationCount(0))
-
-    })
 
     const scrollToSection = (elementRef) => {
         console.log('clicked')
