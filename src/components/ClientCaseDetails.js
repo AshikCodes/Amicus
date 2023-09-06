@@ -159,7 +159,10 @@ const ClientCaseDetails = () => {
                         <Heading size='xs' textTransform='uppercase' textAlign='left' fontSize='md' color='rgb(93, 63, 211)'>
                           Returned Case Assignment
                         </Heading>
-                        <a className="caseassigment-documents" href={caseInfo.assignmentlink}> Click here to download assignment docs</a>
+                        <Link href={caseInfo.assignmentlink} isExternal textAlign='left' size='md'>
+                            Download returned case assignment <DownloadIcon mx='2px' />
+                        </Link>
+                        {/* <a className="caseassigment-documents" href={caseInfo.assignmentlink}> Click here to download assignment docs</a> */}
                       </Box>}
                     </Stack>
                   </CardBody>

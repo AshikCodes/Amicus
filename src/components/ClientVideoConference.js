@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { Card, CardBody, CardHeader, Heading, Stack, Button } from "@chakra-ui/react";
+
 
 const ClientVideoConference = () => {
     const userObj = useSelector(state => state.user)
@@ -22,17 +24,38 @@ const ClientVideoConference = () => {
     }, [])
 
 
-    const goToMessageDetails = (room) => {
-        navigate(`/client/video-conference/${room}`)
+    const goToMessageDetails = (room, caseTitle) => {
+        navigate(`/client/video-conference/${room}`, {state: caseTitle})
     }
     return ( 
         <div>
-            <h2>Client Video Conference Rooms</h2>
-            {msgList && 
+            {/* <h2>Client Video Conference Rooms</h2> */}
+            <div className="client-message-container">
+            <Heading size='md' as='h1' fontSize='4xl' bgGradient='linear(to-l, #7928CA, #FF0080)'   bgClip='text'>Video Conferencing</Heading>
+            {/* {msgList && 
                 msgList.map((msgListItem) => 
                 (<div onClick={() => goToMessageDetails(msgListItem.caseid)}>
                     {msgListItem.caseid}
-                </div>))}
+                </div>))} */}
+                <Stack spacing={4}>
+                    {msgList &&
+                        msgList.map((msgListItem) => (
+                        <Card size='md' key={msgListItem.caseid} bgGradient='linear(-20deg, #e9defa 0%, #fbfcdb 100%)'> {/* Add a unique key prop */}
+                            <CardHeader>
+                            <Heading size='md' textAlign='left'>{msgListItem.casetitle}</Heading>
+                            </CardHeader>
+                            <CardBody textAlign='right'>
+                            <Button
+                                colorScheme='blue'
+                                onClick={() => goToMessageDetails(msgListItem.caseid, msgListItem.casetitle)}
+                            >
+                                Video Conference
+                            </Button>
+                            </CardBody>
+                        </Card>
+                        ))}
+                    </Stack>
+                    </div>
         </div>
      );
 }

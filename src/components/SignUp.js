@@ -24,10 +24,12 @@ const SignUp = () => {
 
     const handleSignUp = async (e) => {
         e.preventDefault()
+        console.log(`clicked sign up`)
+
 
        try {
-        await axios.post('http://localhost:3001/signup', {firstname, lastname, email, password})  
-       
+        await axios.post('http://localhost:3001/signup', {firstname, lastname, email, password, usertype: 1})  
+        console.log(`signed up`)
         setModal(true)
         setTimeout(() => {
             navigate('/login')

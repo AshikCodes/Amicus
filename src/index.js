@@ -10,6 +10,8 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { ChakraProvider, extendBaseTheme, extendTheme } from '@chakra-ui/react'
 import chakraTheme from '@chakra-ui/theme'
 import clientReducer from './reducers/clientReducer';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const queryClient = new QueryClient()
@@ -49,7 +51,7 @@ root.render(
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
             <ChakraProvider resetCSS={false}>
-              <App client={queryClient}/>
+                <App client={queryClient}/>
             </ChakraProvider>
         </QueryClientProvider>
       </Provider>

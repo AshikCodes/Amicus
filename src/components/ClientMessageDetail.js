@@ -5,6 +5,7 @@ import { useLocation, useParams } from "react-router-dom";
 import _ from "lodash";
 import { Button, Heading } from "@chakra-ui/react";
 import { animateScroll } from "react-scroll";
+import { Input } from '@chakra-ui/react'
 
 const ClientMessageDetail = ({socket}) => {
     const userObj = useSelector(state => state.user)
@@ -23,7 +24,7 @@ const ClientMessageDetail = ({socket}) => {
      const scrollToBottom = () => {
         animateScroll.scrollToBottom({
             containerId: "message-container",
-            duration: 300
+            duration: 500
           });
       }
 
@@ -39,11 +40,30 @@ const ClientMessageDetail = ({socket}) => {
         console.log(`clicked send btn: ${message}`)
         console.log(`SendMessage Function: sender: ${sender} - receiver: ${receiver}`)
         if(roomid){
-            let messagecontent = message
-            await axios.post('http://localhost:3001/new_message', {sender, receiver, roomid, content: message})
-            socket.emit('send_message', {messagecontent, room: roomid, senderid: sender, receiverid: receiver})
-            console.log(`message received here is ${messagecontent}`)
-            setMessage('')
+            try {
+                let messagecontent = message
+                await axios.post('http://localhost:3001/new_message', {sender, receiver, roomid, content: message, usertype: 1})
+                socket.emit('send_message', {messagecontent, room: roomid, senderid: sender, receiverid: receiver})
+                console.log(`message received here is ${messagecontent}`)
+                setMessage('')
+            }
+            catch(err){
+                console.log(`Could not send message: ${err}`)
+            }
+            
+        }
+    }
+
+    const readMessages = async () => {
+        try {
+            let sender1 = userObj.id
+            let receiver1 = '00e01d43-9571-4d1b-badd-b3cfdf4dcae7'
+
+            await axios.put('http://localhost:3001/read/messages', { usertype: 1, senderid: userObj.id, receiver: '00e01d43-9571-4d1b-badd-b3cfdf4dcae7', roomid: roomid})
+            console.log(`Successfully read messages`)
+        }
+        catch(err){
+            console.log(`Error trying to read messages`)
         }
     }
 
@@ -54,6 +74,7 @@ const ClientMessageDetail = ({socket}) => {
           console.log(`new elements here is ${JSON.stringify([...messageReceived, newElements])}`);
           console.log(`new element here is ${JSON.stringify(messageReceived)}`);
           setMessageReceived((oldArray) => [...oldArray, newElements]);
+          readMessages()
         };
       
         socket.on('receive_message', handleReceiveMessage);
@@ -77,8 +98,7 @@ const ClientMessageDetail = ({socket}) => {
                 let sender1 = userObj.id
                 let receiver1 = '00e01d43-9571-4d1b-badd-b3cfdf4dcae7'
                 if(roomid){
-                    let result = await axios.post('http://localhost:3001/get_messages', {sender: sender1, receiver: receiver1, roomid})
-                    
+                    let result = await axios.post('http://localhost:3001/get_messages', {sender: sender1, receiver: receiver1, roomid, usertype: 1})
                     let newArray = result.data.messages
                     console.log(`cheese 2 ${JSON.stringify(newArray)}`)
                     setMessageReceived(newArray)
@@ -89,7 +109,21 @@ const ClientMessageDetail = ({socket}) => {
                 console.log(`could not retrieve messages: ${err}`)
             }
         }
+
+        const readMessages = async () => {
+            try {
+                let sender1 = userObj.id
+                let receiver1 = '00e01d43-9571-4d1b-badd-b3cfdf4dcae7'
+
+                await axios.put('http://localhost:3001/read/messages', { usertype: 1, senderid: userObj.id, receiver: '00e01d43-9571-4d1b-badd-b3cfdf4dcae7', roomid: roomid})
+                console.log(`Successfully read messages`)
+            }
+            catch(err){
+                console.log(`Error trying to read messages`)
+            }
+        }
         getMessages()
+        // readMessages()
     },[])
     return ( 
         <div className="scrollable-msg-view">
@@ -108,9 +142,10 @@ const ClientMessageDetail = ({socket}) => {
                 </div>
             </div>
             <div className="msg-input-container">
-            <input value={message} onChange={e => setMessage(e.target.value)}></input>
+            {/* <input value={message} onChange={e => setMessage(e.target.value)} className="msg-input"></input> */}
+            <Input placeholder='Type your message' onChange={e => setMessage(e.target.value)} value={message} size='md'/>
             {/* <button onClick={sendMessage}>Send message</button> */}
-            <Button onClick={sendMessage} colorScheme="green" _hover={{cursor: 'pointer'}} height='2em'>Send</Button>
+            <Button onClick={sendMessage} colorScheme="green" _hover={{cursor: 'pointer'}} size='md' pl='2em' pr='2em'>Send</Button>
             </div>
             
             </div>}

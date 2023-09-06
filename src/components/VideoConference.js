@@ -1,3 +1,4 @@
+import { Button, Heading } from "@chakra-ui/react";
 import axios from "axios";
 import { useRef, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -5,6 +6,7 @@ import { useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Peer from "simple-peer"
 import SimplePeer from "simple-peer";
+
 
 const VideoConference = ({socket}) => {
     
@@ -15,6 +17,7 @@ const VideoConference = ({socket}) => {
 
     const { roomid } = useParams()
     const location = useLocation()
+
 
     const navigate = useNavigate()
 
@@ -52,6 +55,10 @@ const VideoConference = ({socket}) => {
         }
     },[])
 
+    // 
+
+
+
     useEffect(() => {
         // if(userObj.usertype === 0){
         //     console.log(`got in userblock`)
@@ -64,11 +71,12 @@ const VideoConference = ({socket}) => {
     },[room, socket])
 
     useEffect(() => {
+        console.log(`userObj.id here is ${userObj.id}`)
         setMe(userObj.id)
-        
+        let stream
         const getUserMedia = async () => {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({video: true});
+            stream = await navigator.mediaDevices.getUserMedia({video: true});
             setStream(stream)
             myVideo.current.srcObject = stream;
         }
@@ -83,6 +91,7 @@ const VideoConference = ({socket}) => {
             let user_type = userObj.usertype
             let messageInfo
             if(user_type === 1){
+                console.log(`got into client usertype`)
                 setSender(userObj.id)
                 setReceiver('00e01d43-9571-4d1b-badd-b3cfdf4dcae7')
                 messageInfo = {
@@ -91,15 +100,20 @@ const VideoConference = ({socket}) => {
                 }
             }
             else if(user_type === 0){
+                console.log(`got into admin usertype`)
                 let receiver1
                 if(localStorage.getItem('clientData') === null){
+                    console.log(`client.id not in local storage is ${clientObj.id}`)
                     window.localStorage.setItem('clientData', clientObj.id)
                     receiver1 = clientObj.id
                 }
                 else{
+                    
                     receiver1 = localStorage.getItem('clientData')
+                    console.log(`client id in local storage is ${receiver1}`)
                 }
                 
+                console.log(`receiver1 here is ${receiver1}`)
                 console.log(`client id here is ${clientObj.id}`)
                 setSender('00e01d43-9571-4d1b-badd-b3cfdf4dcae7')
                 // setReceiver(location.state.clientid)
@@ -153,6 +167,10 @@ const VideoConference = ({socket}) => {
             socket.off("callUser");
             socket.off("endCall");
             socket.off("callAccepted"); // Remove callAccepted listener
+            if(stream){
+                stream.getTracks().forEach((track) => track.stop());
+            }
+            
         };
         
 	}, [sender, receiver])
@@ -234,7 +252,9 @@ const VideoConference = ({socket}) => {
 
     return ( 
         <div>
-            <h2>Video Conferencing</h2>
+            <div className="video-conference-container">
+            <Heading size='md' as='h1' fontSize='3xl' bgGradient='linear(to-l, #7928CA, #FF0080)'   bgClip='text'>Video Conferencing</Heading>
+            {/* <h2>Video Conferencing</h2> */}
             <div className="video-container">
 				<div className="video">
 					{stream && 
@@ -253,21 +273,26 @@ const VideoConference = ({socket}) => {
 					null}
 				</div>
 			</div>
-            <div className="call-button">
+            {/* classname="call-button" */}
+            <div id="video-container">
 					{callAccepted && !callEnded ? (
-						<button variant="contained" color="secondary" onClick={leaveCall}>End Call</button>
+                        // <button variant="contained" color="secondary" onClick={leaveCall}>End Call</button>
+                        <Button colorScheme='red' onClick={leaveCall}>End Call</Button>
 					) : (
-                        <button onClick={() => callUser(room)}>Call</button>
+                        <Button colorScheme='green' onClick={() => callUser(room)}>Call</Button>
+                        // <button onClick={() => callUser(room)}>Call</button>
 					)}
 				</div>
                 <div>
 				{receivingCall && caller !== userObj.id && !callAccepted ? (
 						<div className="caller">
 						<h1 >{caller} is calling...</h1>
-                        <button onClick={answerCall}> Answer</button>
+                        {/* <button onClick={answerCall}> Answer</button> */}
+                        <Button colorScheme='blue' onClick={answerCall} mb='1em'>Answer</Button>
 					</div>
 				) : null}
 			</div>
+            </div>
         </div>
      );
 }

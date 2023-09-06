@@ -37,6 +37,16 @@ import AdminVideoConferenceDetail from './components/AdminComponents/AdminVideoC
 import ClientVideoConference from './components/ClientVideoConference';
 import ClientVideoConferenceDetail from './components/ClientVideoConferenceDetail';
 import VideoConference from './components/VideoConference';
+import AdminEngagements from './components/AdminComponents/AdminEngagements';
+import AdminCustomPlan from './components/AdminComponents/AdminCustomPlan';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import ClientEngagements from './components/ClientEngagements';
+import AdminBilling from './components/AdminComponents/AdminBilling';
+import AdminBillingInfo from './components/AdminComponents/AdminBillingInfo';
+import AdminProtectedRoutes from './components/AdminComponents/AdminProtectedRoutes';
+import AdminSettings from './components/AdminComponents/AdminSettings';
+import AdminCreateEngagements from './components/AdminComponents/AdminCreateEngagement';
 
 // const socket = io.connect('http://localhost:3001')
 const socket = io.connect('http://localhost:3001')
@@ -69,24 +79,33 @@ function App({client}) {
           <Route path='/client/video-conference/:roomid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><ClientSidebar /><VideoConference socket={socket}/></></div>}/>
           <Route path='/client/billing/:paymentid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><ClientSidebar /><ClientBillInfo /></></div>}/>
           <Route path='/client/appointments' element={<div style={{display: 'flex', flexDirection: 'row'}}><><ClientSidebar /><ClientAppointments /></></div>}/>
+          <Route path='/client/engagements' element={<div style={{display: 'flex', flexDirection: 'row'}}><><ClientSidebar /><ClientEngagements /></></div>}/>
+          <Route path='/client/settings' element={<div style={{display: 'flex', flexDirection: 'row'}}><><ClientSidebar /><ClientSettings client={client}/></></div>}/>
         </Route>
 
 
-        <Route path='/client/settings' element={<div style={{display: 'flex', flexDirection: 'row'}}><><ClientSidebar /><ClientSettings client={client}/></></div>}/>
+
         <Route path='*' element={<Error />} />
         <Route path='/confirm/:confirmationtoken' element={<VerifiedUser />} />
-
+        
         {/* Admin Routes */}
-        <Route path='/admin/dashboard' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminDashboard/></></div>}/>
-        <Route path='/admin/messages' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminMessages/></></div>}/>
-        <Route path='/admin/messages/:roomid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminMessageDetail socket={socket}/></></div>}/>
-        <Route path='/admin/video-conference' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminVideoConference/></></div>}/>
-        {/* <Route path='/admin/video-conference/:roomid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminVideoConferenceDetail socket={socket}/></></div>}/> */}
-        <Route path='/admin/video-conference/:roomid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><VideoConference socket={socket}/></></div>}/>
-        <Route path='/admin/case-management' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminCases/></></div>}/>
-        <Route path='/admin/cases/:caseid/submit' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><SubmitCaseBrief /></></div>}/>
-        <Route exact path='/admin/cases/:caseid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminCaseDetails /></></div>}/>
-
+        <Route element={<AdminProtectedRoutes />}>
+          <Route path='/admin/dashboard' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminDashboard/></></div>}/>
+          <Route path='/admin/messages' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminMessages/></></div>}/>
+          <Route path='/admin/engagements' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminEngagements/></></div>}/>
+          <Route path='/admin/create-engagement' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminCreateEngagements/></></div>}/>
+          <Route path='/admin/billing' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminBilling/></></div>}/>
+          <Route path='/admin/billing/:paymentid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminBillingInfo/></></div>}/>
+          <Route path='/admin/messages/:roomid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminMessageDetail socket={socket}/></></div>}/>
+          <Route path='/admin/video-conference' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminVideoConference/></></div>}/>
+          {/* <Route path='/admin/video-conference/:roomid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminVideoConferenceDetail socket={socket}/></></div>}/> */}
+          <Route path='/admin/video-conference/:roomid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><VideoConference socket={socket}/></></div>}/>
+          <Route path='/admin/case-management' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminCases/></></div>}/>
+          <Route path='/admin/custom-plans' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminCustomPlan/></></div>}/>
+          <Route path='/admin/cases/:caseid/submit' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><SubmitCaseBrief /></></div>}/>
+          <Route path='/admin/settings' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminSettings client={client} /></></div>}/>
+          <Route exact path='/admin/cases/:caseid' element={<div style={{display: 'flex', flexDirection: 'row'}}><><AdminSidebar /><AdminCaseDetails /></></div>}/>
+        </Route>
 
       </Routes>
       

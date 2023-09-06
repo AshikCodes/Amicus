@@ -2,10 +2,15 @@ import { useState } from 'react';
 import Calendar from 'react-calendar';
 import TimePicker from 'react-time-picker';
 // import 'react-calendar/dist/Calendar.css';
-import '../Calendar.css'
+// import '../Calendar.css'
 // import 'react-time-picker/dist/TimePicker.css';
 import '../TimePicker.css'
 import 'react-clock/dist/Clock.css';
+
+
+// For Admin 
+// import '../.././Calendar.css'
+// import '../.././TimePicker.css'
 
 const ClientAppointments = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());

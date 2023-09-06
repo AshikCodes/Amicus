@@ -22,7 +22,8 @@
   margin-top: 1em;
   border-radius: 0.3em;
   display: flex;
-  background-color: rgb(150, 128, 251);
+  /* background-color: red; */
+  background-color: rgb(151, 57, 233);
   color: white;
   font-weight: bold;
   flex-grow: 1;

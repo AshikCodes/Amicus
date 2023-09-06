@@ -11,7 +11,7 @@ const ClientSidebar = () => {
         {name: 'Dashboard', link: '/client/dashboard'},
         {name: 'Cases', link: '/client/cases'},
         {name: 'Billing', link: '/client/billing'},
-        {name: 'Engagements', link: '/client/appointments'},
+        {name: 'Engagements', link: '/client/engagements'},
         {name: 'Messages', link: '/client/messages'},
         {name: 'Video', link: '/client/video-conference'},
         {name: 'Settings', link: '/client/settings'}

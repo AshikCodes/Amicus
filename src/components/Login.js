@@ -4,8 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../reducers/userReducer";
 import { motion } from 'framer-motion'
-import { useToast } from "@chakra-ui/react";
+import { Input, useToast } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/react";
+
 
 const Login = () => {
     const [email, setEmail] = useState('')
@@ -24,6 +25,13 @@ const Login = () => {
             window.localStorage.setItem('loggedAppUser', JSON.stringify(user.data))
             console.log('Successfully logged in.')
             if(user.data.usertype === 1){
+                toast({
+                    title: `Welcome ${user.data.firstname}!`,
+                    position: 'top-right',
+                    duration: 2000,
+                    status: 'success',
+                    isClosable: true,
+                  })
                 navigate('/client/dashboard', {replace: true})
             }
             else if(user.data.usertype === 0){
@@ -45,12 +53,14 @@ const Login = () => {
                     <h2>Welcome back 👋</h2>
                     <form className="login-form-container" action="submit">
                         <div className="login-input-container">
-                            <input placeholder="Username" className="username-input" onChange={(e) => setEmail(e.target.value)} ></input>
-                            <input type="password" placeholder="Password" className="username-password" onChange={(e) => setPassword(e.target.value)}></input>
+                            <Input placeholder="Username" onChange={(e) => setEmail(e.target.value)} boxSizing="border-box"/>
+                            <Input placeholder="Password" type="password" onChange={(e) => setPassword(e.target.value)} boxSizing="border-box"/>
+                            {/* <input placeholder="Username" className="username-input" onChange={(e) => setEmail(e.target.value)} ></input> */}
+                            {/* <input type="password" placeholder="Password" className="username-password" onChange={(e) => setPassword(e.target.value)}></input> */}
                         </div>
                         <div className="login-buttons-container">
-                            <Button className="login-button" colorScheme='purple' onClick={(e) => handleLogin(e)}>Login</Button>
-                            <Button className="forgot-password-button" colorScheme='purple' variant='outline'>
+                            <Button className="login-button" colorScheme='purple' fontSize='min(3vw, 1em)' onClick={(e) => handleLogin(e)}>Login</Button>
+                            <Button className="forgot-password-button" fontSize='min(3vw, 1em)' colorScheme='purple' variant='outline'>
                                 Forgot Password?
                             </Button>
                             {/* <button className="login-button" type='submit' onClick={(e) => handleLogin(e)}>Login</button> */}

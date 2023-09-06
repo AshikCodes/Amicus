@@ -19,6 +19,8 @@ import {
     Badge,
     Button,
     Box,
+    Heading,
+    Text,
   } from '@chakra-ui/react'
 import { Link } from "react-router-dom";
 
@@ -35,31 +37,39 @@ const ClientDashboard = () => {
 
     const getDashboardInfo = async () => {
             let dashboard
-            let result = await axios.post('http://localhost:3001/dashboard', {id: userObj.id})
+            // let result = await axios.post('http://localhost:3001/dashboard', {id: userObj.id})
+            let result = await axios.post('http://localhost:3001/client/dashboard', {clientid: userObj.id})
+            console.log(`result.data here is ${JSON.stringify(result.data)}`)
             
             if(result.data.cases === null){
                 setNoCases(true)
             }
             else {
-                let mainCase = _.last(result.data.cases)
-                let reversedArray = _.reverse(result.data.cases)
-                setCurrentCase(mainCase)
+                // let mainCase = _.last(result.data.cases)
+                // let reversedArray = _.reverse(result.data.cases)
+                // setCurrentCase(mainCase)
+                // dashboard = {
+                //     caseplan: mainCase.caseplan,
+                //     casetitle: mainCase.casetitle,
+                //     caseoverview: mainCase.caseoverview,
+                //     documentslink: mainCase.documentslink,
+                //     casestatus: mainCase.casestatus,
+                //     casehistory: reversedArray
+                // }
                 dashboard = {
-                    caseplan: mainCase.caseplan,
-                    casetitle: mainCase.casetitle,
-                    caseoverview: mainCase.caseoverview,
-                    documentslink: mainCase.documentslink,
-                    casestatus: mainCase.casestatus,
-                    casehistory: reversedArray
+                    currentcaseplan: result.data.currentcaseplan,
+                    currentcasestatus: result.data.currentcasestatus,
+                    currentcasetitle: result.data.currentcasetitle,
+                    casehistory: result.data.casehistory,
+                    unpaid: result.data.unpaid,
+                    engagements: result.data.engagements,
+                    unreadmessages: result.data.unreadmessages,
+                    currentcaseid: result.data.currentcaseid
                 }
             
             }
 
             return dashboard
-            
-            
-        
-        
     }
 
     const {isLoading, data, isError, error} = useQuery('dashboard', getDashboardInfo)
@@ -74,107 +84,40 @@ const ClientDashboard = () => {
     return ( 
         <div>
             {!noCases ? <div className="client-dashboard-container">
-                {data && <div className="appointments-widget">
-                    <h1 className="appointments-widget-title">Upcoming engagements</h1>
-                    <p className="appointments-widget-content">1:30pm video conference</p>
-                    <p className="appointments-widget-content">Sent more evidence documents</p>
-                    <p className="appointments-widget-content">Review returned task</p>
+                {data && <div className="client-engagements-widget" onClick={() => navigate('/client/engagements')} >
+                    <Heading as='h1' margin='0' mt='0.5em' fontSize='3em' bgGradient='linear(to-r, #3ab5b0 0%, #3d99be 31%, #56317a 100%)' bgClip='text'>Engagements</Heading>
+                    <Heading as='h1' margin='0' fontSize='6em' bgGradient='linear(to-r, #3ab5b0 0%, #3d99be 31%, #56317a 100%)' bgClip='text'>{data ? data.engagements : 'loading...'}</Heading>
+                    {/* <Text fontSize='2xl' bgGradient='linear(to-r, #3ab5b0 0%, #3d99be 31%, #56317a 100%)' bgClip='text' m='0'>{data ? data.engagements : 'loading...'}</Text> */}
                 </div>}
-                {!data && <div className="appointments-widget">
-                    <SkeletonElement type='widget1-title' />
-                    <SkeletonElement type='widget1-text' />
-                    <SkeletonElement type='widget1-text' />
-                    <SkeletonElement type='widget1-text' />
+                {data && <div className="current-plan-widget" onClick={() => navigate(`/client/cases/${data.currentcaseid}`)}>
+                    <Heading as='h1' margin='0' mt='0.5em' fontSize='1.5em' bgGradient='linear(to-r, #0fd850 0%, #f9f047 100%)' bgClip='text'>{data ? data.currentcaseplan : 'loading...'}</Heading>
+                    <Text fontSize='2xl' bgGradient='linear(to-r, #0fd850 0%, #f9f047 100%)' bgClip='text' m='0'>Case Plan</Text>
                 </div>}
-                {data && <div className="current-plan-widget">
-                    {data && <h1 className="current-plan-widget-title">{data.caseplan}</h1>}
-                    <p className="current-plan-widget-content">Current Plan</p>
+                {data && <div className="current-case-widget" onClick={() => navigate(`/client/cases/${data.currentcaseid}`)}>
+                    <Heading as='h1' margin='0' mt='0.5em' fontSize='3em' bgGradient='linear(to-r, #84fab0 0%, #8fd3f4 100%)' bgClip='text'>Current Case</Heading>
+                    <Text fontSize='2xl' bgGradient='linear(to-r, #0fd850 0%, #f9f047 100%)' bgClip='text'>{data ? data.currentcasetitle : 'loading...'}</Text>
                 </div>}
-                {!data && <div className="current-plan-widget">
-                    <SkeletonElement type='widget2-title' />
-                    <SkeletonElement type='widget2-text' />
-                </div>}
-                {data && <div className="current-case-widget">
-                    {data && <h1 className="current-case-widget-title">{data.casetitle.substring(0,25)}...</h1>}
-                    {data && <p className="current-case-widget-content">{data.caseoverview.substring(0,125)}...</p>}
-                </div>}
-                {!data && <div className="current-case-widget">
-                    <SkeletonElement type='widget4-title' />
-                    <SkeletonElement type='widget4-text' />
-                    <SkeletonElement type='widget4-text'/>
-                </div>}
-                {data && <div className="current-case-status-widget">
+                {data && <div className="current-case-status-widget" onClick={() => navigate(`/client/cases/${data.currentcaseid}`)}>
                     {data && <div>
-                        {data.casestatus === 'in progress' ? <h1 className="current-case-status-widget-title">In Progress 🚧</h1> : data.casestatus === 'complete' ? <h1 className="current-case-status-widget-title">Completed 🙌</h1> : null}
-                        {data.casestatus === 'in progress' ? <p className="current-case-status-widget-content">Case Brief is currently being reviewed and worked on. If you have questions, please forward to our team.</p> :  data.casestatus === 'complete' ? <p className="current-case-status-widget-content">Case brief is complete! Go check it out in the Cases tab.</p> : null}
+                        <Heading as='h1' margin='0' mt='0.5em' fontSize='3em' bgGradient='linear(to-r, #0fd850 0%, #f9f047 100%)' bgClip='text'>Case Status</Heading>
+                    <Text fontSize='2xl' bgGradient='linear(to-r, #0fd850 0%, #f9f047 100%)' bgClip='text'>{data ? data.currentcasestatus.toUpperCase() : 'loading...'}</Text>
                     </div>}
                 </div>}
-                {!data && <div className="current-case-status-widget">
-                    <SkeletonElement type='widget5-title' />
-                    <SkeletonElement type='widget5-text' />
-                </div>}
-                {data && <div className="documents-widget">
-                    <h1 className="documents-widget-title">Documents Overview</h1>
-                    {data && <p className="documents-widget-content">{data.documentslink}</p>}
-                </div>}
-                {!data && <div className="documents-widget">
-                    <SkeletonElement type='widget6-title' />
-                    <SkeletonElement type='widget6-text' />
-                    <SkeletonElement type='widget6-text' />
-                    <SkeletonElement type='widget6-text' />
-                </div>}
-                {data && <div className="user-widget">
-                    <h1 className="user-widget-title">Hi👋</h1>
-                    {userObj && <p style={{fontWeight: 'bold', marginBottom: '2em'}} className="user-widget-name">{userObj.firstname}</p>}
-                </div>}
-                {!data && <div className="user-widget">
-                    <SkeletonElement type='widget3-title' />
-                    <SkeletonElement type='widget3-text' />
-                </div>}
-                {data && <div className="lawyer-info-widget">
-                    <h1 className="lawyer-info-widget-title">Your Lawyer</h1>
-                    <p className="lawyer-info-widget-content">Saul Goodman</p>
-                    <p className="lawyer-info-widget-content">Experienced criminal lawyer.</p>
-                    <p className="lawyer-info-widget-content">Studied at Harvard</p>
-                </div>}
-                {data && <div className="payment-info-widget">
-                    <h1>Paid</h1>
+                {data && <div className="payment-info-widget" onClick={() => navigate(`/client/billing`)}>
+                    <Heading as='h1' margin='0' mt='0.5em' fontSize='3em' bgGradient='linear(to-r, #3ab5b0 0%, #3d99be 31%, #56317a 100%)' bgClip='text'>Unpaid Payments</Heading>
+                    <Heading as='h1' margin='0' fontSize='6em' bgGradient='linear(to-r, #3ab5b0 0%, #3d99be 31%, #56317a 100%)' bgClip='text'>{data ? data.unpaid : 'loading...'}</Heading>
                     </div>}
-                {!data && <div className="lawyer-info-widget">
-                    <SkeletonElement type='widget8-title' />
-                    <SkeletonElement type='widget8-text' />
-                    <SkeletonElement type='widget8-text' />
-                    <SkeletonElement type='widget8-text' />
-                </div>}
-                {data && <div className="case-history-widget">
-                    <h1 className="case-history-title">Cases History</h1>
-                    <TableContainer>
-                    <Table variant='simple' size='sm'>
-                        <Thead>
-                        <Tr>
-                            <Th>Case</Th>
-                            <Th>Plan</Th>
-                            <Th>Status</Th>
-                        </Tr>
-                        </Thead>
-                        <Tbody>
-                           {data.casehistory.map((casebrief) => (<Tr onClick={() => navigate(`/client/cases/${casebrief.caseid}`)} _hover={{cursor: 'pointer'}}>
-                                <Td>{casebrief.casetitle}</Td>
-                                <Td>{casebrief.caseplan}</Td>
-                                <Td>{casebrief.casestatus === 'in progress' ? <Badge className="status-tag" colorScheme='yellow'>in progress</Badge> : casebrief.casestatus === 'complete' ? <Badge className="status-tag" colorScheme='green'>complete</Badge> : null}</Td>
-                            </Tr>))}
-                        </Tbody>
-                    </Table>
-                    </TableContainer>
+                {data && <div className="case-history-widget" onClick={() => navigate(`/client/cases`)}>
+                    <Heading as='h1' margin='0' mt='0.5em' fontSize='3em' bgGradient='linear(to-r, #3ab5b0 0%, #3d99be 31%, #56317a 100%)' bgClip='text'>Cases History</Heading>
+                    <Heading as='h1' margin='0' fontSize='6em' bgGradient='linear(to-r, #3ab5b0 0%, #3d99be 31%, #56317a 100%)' bgClip='text'>{data ? data.casehistory : 'loading...'}</Heading>
 
-                </div>}
-                {!data && <div className="case-history-widget">
-                    <SkeletonElement type='widget7-title' />
-                    <SkeletonElement type='widget7-text' />
-                    <SkeletonElement type='widget7-text' />
-                    <SkeletonElement type='widget7-text' />
-                </div>}                
-            </div> :<div className="client-dashboard-container no-cases">
+                </div>}   
+                {data && <div className="client-unread-messages-widget" onClick={() => navigate(`/client/messages`)}>
+                    <Heading as='h1' margin='0' fontSize='3em' bgGradient='linear(to-r, #0fd850 0%, #f9f047 100%)' bgClip='text'>Messages</Heading>
+                    <Heading as='h1' margin='0' fontSize='6em' bgGradient='linear(to-r, #0fd850 0%, #f9f047 100%)' bgClip='text'>{data ? data.unreadmessages : 'loading...'}</Heading>
+
+                </div>}            
+            </div> : <div className="client-dashboard-container no-cases">
                             <div className="no-cases-client-container">
                                 <h1 className="no-cases-msg client" >Welcome to your client dashboard! No active cases? Time to create a new one! Click below to start your next legal journey!</h1>
                                 <Button colorScheme="green" onClick={() => navigate('/client/cases/new/choose-plan')} _hover={{cursor: 'pointer'}}>Create Case Brief</Button>
@@ -187,3 +130,5 @@ const ClientDashboard = () => {
 export default ClientDashboard;
 
 
+{/* {data.casestatus === 'in progress' ? <h1 className="current-case-status-widget-title">In Progress 🚧</h1> : data.casestatus === 'complete' ? <h1 className="current-case-status-widget-title">Completed 🙌</h1> : null}
+                        {data.casestatus === 'in progress' ? <p className="current-case-status-widget-content">Case Brief is currently being reviewed and worked on. If you have questions, please forward to our team.</p> :  data.casestatus === 'complete' ? <p className="current-case-status-widget-content">Case brief is complete! Go check it out in the Cases tab.</p> : null} */}
